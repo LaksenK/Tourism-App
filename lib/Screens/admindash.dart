@@ -1,3 +1,4 @@
+// Admin Dashboard with guide request approval functionality
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tourism_app/components/navbar.dart';
@@ -6,216 +7,121 @@ class AdminDash extends StatefulWidget {
   const AdminDash({super.key});
 
   @override
-  _AdminDashState createState() => _AdminDashState();
+  AdminDashState createState() => AdminDashState();
 }
 
-class _AdminDashState extends State<AdminDash> {
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController contact1Controller = TextEditingController();
-  final TextEditingController contact2Controller = TextEditingController();
-  final TextEditingController priceController = TextEditingController();
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController bannerController = TextEditingController(); // Title Banner (Image Link)
-
-  bool isLoading = false; // To track submission state
-
-  // Sri Lankan provinces
-  final List<String> provinces = [
-    "Central", "Eastern", "North Central", "Northern", "North Western",
-    "Sabaragamuwa", "Southern", "Uva", "Western"
-  ];
-  List<String> selectedProvinces = [];
-
-  // Function to add guide to Firestore
-  Future<void> addGuide() async {
-    if (_validateFields()) {
-      setState(() {
-        isLoading = true;
-      });
-
-      try {
-        await FirebaseFirestore.instance.collection('guides').add({
-          'firstName': firstNameController.text.trim(),
-          'lastName': lastNameController.text.trim(),
-          'email': emailController.text.trim(),
-          'contact1': contact1Controller.text.trim(),
-          'contact2': contact2Controller.text.trim(),
-          'provinces': selectedProvinces,
-          'price': double.parse(priceController.text.trim()),
-          'title': titleController.text.trim(),
-          'description': descriptionController.text.trim(),
-          'bannerImage': bannerController.text.trim(),
-          'createdAt': FieldValue.serverTimestamp(),
-        });
-
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Guide added successfully!")),
-        );
-
-        // Clear fields
-        _clearFields();
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error: ${e.toString()}")),
-        );
-      } finally {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    }
-  }
-
-  // Validate required fields
-  bool _validateFields() {
-    if (firstNameController.text.isEmpty ||
-        lastNameController.text.isEmpty ||
-        emailController.text.isEmpty ||
-        contact1Controller.text.isEmpty ||
-        contact2Controller.text.isEmpty ||
-        selectedProvinces.isEmpty ||
-        priceController.text.isEmpty ||
-        titleController.text.isEmpty ||
-        descriptionController.text.isEmpty ||
-        bannerController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("All fields must be completed!")),
-      );
-      return false;
-    }
-    return true;
-  }
-
-  // Clear all fields after submission
-  void _clearFields() {
-    firstNameController.clear();
-    lastNameController.clear();
-    emailController.clear();
-    contact1Controller.clear();
-    contact2Controller.clear();
-    priceController.clear();
-    titleController.clear();
-    descriptionController.clear();
-    bannerController.clear();
-    setState(() {
-      selectedProvinces = [];
-    });
-  }
-
+class AdminDashState extends State<AdminDash> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-  preferredSize: const Size.fromHeight(70),
-  child: const NavBar(),
-),
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(70),
+        child: NavBar(),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Center(
-                child: Text(
-                  "Add a Travel Guide",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Center(
+              child: Text(
+                "Pending Guide Requests",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 20),
+            ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance.collection('guide_requests').where('status', isEqualTo: 'pending').snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-              // Contact Details Section
-              const Text("Contact Details", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 10),
+                  var requests = snapshot.data!.docs;
 
-              _buildTextField(firstNameController, "First Name"),
-              _buildTextField(lastNameController, "Last Name"),
-              _buildTextField(emailController, "Email"),
-              _buildTextField(contact1Controller, "Contact Number 1"),
-              _buildTextField(contact2Controller, "Contact Number 2"),
+                  if (requests.isEmpty) {
+                    return const Center(child: Text("No pending guide requests."));
+                  }
 
-              const SizedBox(height: 20),
-
-              // Travel Details Section
-              const Text("Travel Details", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 10),
-
-              // Multi-select checkboxes for Provinces
-              const Text("Provinces (Select all that apply)"),
-              Wrap(
-                children: provinces.map((province) {
-                  return CheckboxListTile(
-                    title: Text(province),
-                    value: selectedProvinces.contains(province),
-                    onChanged: (bool? selected) {
-                      setState(() {
-                        if (selected == true) {
-                          selectedProvinces.add(province);
-                        } else {
-                          selectedProvinces.remove(province);
-                        }
-                      });
-                    },
-                    controlAffinity: ListTileControlAffinity.leading,
-                  );
-                }).toList(),
-              ),
-
-              _buildTextField(priceController, "Price per person", isNumeric: true),
-              _buildTextField(titleController, "Title"),
-              _buildTextField(bannerController, "Title Banner (Image URL)"),
-              _buildTextField(descriptionController, "Description", isMultiline: true),
-
-              const SizedBox(height: 20),
-
-              // Add Guide Button
-              Center(
-                child: ElevatedButton(
-                  onPressed: isLoading ? null : addGuide,
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 40),
-                    backgroundColor: Colors.blueAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text(
-                          "Add Guide",
-                          style: TextStyle(fontSize: 18, color: Colors.white),
+                  return ListView.builder(
+                    itemCount: requests.length,
+                    itemBuilder: (context, index) {
+                      var data = requests[index].data() as Map<String, dynamic>;
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Name: ${data['name']}", style: const TextStyle(fontWeight: FontWeight.bold)),
+                              Text("Email: ${data['email']}"),
+                              Text("NIC: ${data['nic']}"),
+                              Text("Language: ${data['language']}"),
+                              Text("Member #: ${data['memberNumber']}"),
+                              Text("Issue: ${data['issueDate']} | Expiry: ${data['expiryDate']}"),
+                              const SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () => _approveGuide(data),
+                                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                                    child: const Text("Accept"),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  ElevatedButton(
+                                    onPressed: () => _rejectGuide(data['userID']),
+                                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                                    child: const Text("Reject"),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
-                ),
+                      );
+                    },
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  // Custom TextField Widget
-  Widget _buildTextField(TextEditingController controller, String label, {bool isNumeric = false, bool isMultiline = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
-        controller: controller,
-        keyboardType: isNumeric ? TextInputType.number : (isMultiline ? TextInputType.multiline : TextInputType.text),
-        maxLines: isMultiline ? 3 : 1,
-        style: const TextStyle(color: Colors.black),
-        decoration: InputDecoration(
-          labelText: label,
-          filled: true,
-          fillColor: Colors.grey[300],
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide.none,
-          ),
-        ),
-      ),
-    );
+  Future<void> _approveGuide(Map<String, dynamic> data) async {
+    final uid = data['userID'];
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'role': 'guide',
+      });
+
+      await FirebaseFirestore.instance.collection('guide_requests').doc(uid).delete();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Guide approved successfully.")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: ${e.toString()}")),
+      );
+    }
+  }
+
+  Future<void> _rejectGuide(String uid) async {
+    try {
+      await FirebaseFirestore.instance.collection('guide_requests').doc(uid).delete();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Guide request rejected.")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: ${e.toString()}")),
+      );
+    }
   }
 }

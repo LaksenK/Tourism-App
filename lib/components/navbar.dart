@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tourism_app/Screens/login.dart';
 import 'package:tourism_app/Screens/userProfile.dart';
+import 'package:tourism_app/Screens/home.dart';
+import 'package:tourism_app/Screens/guides.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({super.key});
@@ -58,12 +60,38 @@ class _NavBarState extends State<NavBar> {
         ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // Nav links with icons
+          Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.home, color: Colors.black87),
+                tooltip: 'Home',
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const Home()));
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.map, color: Colors.black87),
+                tooltip: 'Guides',
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const GuidesPage()));
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.person_outline, color: Colors.black87),
+                tooltip: 'Profile',
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfilePage()));
+                },
+              ),
+            ],
+          ),
+
           Expanded(
             child: Center(
               child: Text(
-                'WanDora',
+                'WonDora',
                 style: GoogleFonts.lora(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -79,9 +107,10 @@ class _NavBarState extends State<NavBar> {
               ),
             ),
           ),
+
+          // User name and actions
           Row(
             children: [
-              // Display user's first name
               Text(
                 firstName,
                 style: GoogleFonts.lora(
@@ -91,19 +120,6 @@ class _NavBarState extends State<NavBar> {
                 ),
               ),
               const SizedBox(width: 10),
-
-              // Profile Icon
-              IconButton(
-                icon: const Icon(Icons.person, size: 28, color: Colors.black87),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const profile()),
-                  );
-                },
-              ),
-
-              // Logout Icon
               IconButton(
                 icon: const Icon(Icons.logout, color: Colors.redAccent),
                 onPressed: logout,

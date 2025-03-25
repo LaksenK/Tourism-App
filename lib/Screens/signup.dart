@@ -8,10 +8,11 @@ class Signup extends StatefulWidget {
   const Signup({super.key});
 
   @override
-  _SignupState createState() => _SignupState();
+  // ignore: library_private_types_in_public_api
+  SignupState createState() => SignupState();
 }
 
-class _SignupState extends State<Signup> {
+class SignupState extends State<Signup> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -20,41 +21,40 @@ class _SignupState extends State<Signup> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  bool isLoading = false; // Show loading state
+  bool isLoading = false;
 
   Future<void> signUp() async {
     setState(() {
-      isLoading = true; // Start loading
+      isLoading = true;
     });
 
     try {
-      // Create user in Firebase Authentication
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
 
-      // Store user details in Firestore
       await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'firstName': firstNameController.text.trim(),
         'lastName': lastNameController.text.trim(),
         'email': emailController.text.trim(),
         'userID': userCredential.user!.uid,
+        'role': 'tourist',
       });
 
-      // Redirect to login page
       Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => const Login()),
       );
     } catch (e) {
-      // Show error message
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error: ${e.toString()}")),
       );
     } finally {
       setState(() {
-        isLoading = false; // Stop loading
+        isLoading = false;
       });
     }
   }
@@ -64,9 +64,8 @@ class _SignupState extends State<Signup> {
     return Scaffold(
       body: Stack(
         children: [
-          // Background Image
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: NetworkImage(
                   'https://media.licdn.com/dms/image/v2/D5612AQFA2ZdDfGEcFA/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1680237823590?e=2147483647&v=beta&t=OADeKjhd-C1ZksJMVe3Y2Vvv3R36ZbkxqqgtqWdV2B8',
@@ -75,12 +74,10 @@ class _SignupState extends State<Signup> {
               ),
             ),
           ),
-
-          // SignUp Card
           Center(
             child: Container(
               width: MediaQuery.of(context).size.width * 0.85,
-              constraints: const BoxConstraints(maxWidth: 400), // Responsive
+              constraints: const BoxConstraints(maxWidth: 400),
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.7),
@@ -106,8 +103,6 @@ class _SignupState extends State<Signup> {
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  // First Name Field
                   TextField(
                     controller: firstNameController,
                     style: const TextStyle(color: Colors.white),
@@ -123,8 +118,6 @@ class _SignupState extends State<Signup> {
                     ),
                   ),
                   const SizedBox(height: 15),
-
-                  // Last Name Field
                   TextField(
                     controller: lastNameController,
                     style: const TextStyle(color: Colors.white),
@@ -140,8 +133,6 @@ class _SignupState extends State<Signup> {
                     ),
                   ),
                   const SizedBox(height: 15),
-
-                  // Email Field
                   TextField(
                     controller: emailController,
                     style: const TextStyle(color: Colors.white),
@@ -157,8 +148,6 @@ class _SignupState extends State<Signup> {
                     ),
                   ),
                   const SizedBox(height: 15),
-
-                  // Password Field
                   TextField(
                     controller: passwordController,
                     obscureText: true,
@@ -175,8 +164,6 @@ class _SignupState extends State<Signup> {
                     ),
                   ),
                   const SizedBox(height: 15),
-
-                  // Sign Up Button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -196,10 +183,7 @@ class _SignupState extends State<Signup> {
                             ),
                     ),
                   ),
-
                   const SizedBox(height: 15),
-
-                  // Login Navigation
                   TextButton(
                     onPressed: () {
                       Navigator.push(
