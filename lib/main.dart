@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/':(context)=>Home(),
+        '/':(context)=>Login(),
       },
  );
   }
