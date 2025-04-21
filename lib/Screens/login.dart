@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tourism_app/Screens/admindash.dart';
+import 'package:tourism_app/Screens/guides.dart';
 import 'package:tourism_app/Screens/home.dart';
-import 'package:tourism_app/Screens/signup.dart'; // Import homepage
+import 'package:tourism_app/Screens/signup.dart';
+import 'package:tourism_app/main.dart'; // Import homepage
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -19,7 +22,7 @@ class _LoginState extends State<Login> {
 
   bool isLoading = false; // Loading state for button
 
-  Future<void> signIn() async {
+Future<void> signIn() async {
   setState(() {
     isLoading = true;
   });
@@ -30,19 +33,33 @@ class _LoginState extends State<Login> {
       password: passwordController.text.trim(),
     );
 
-    // Check if the user is the admin
-    if (emailController.text.trim().toLowerCase() == 'admin@gmail.com') {
-      // Redirect to admin dashboard
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const AdminDash()),
-      );
+    // 🔥 Get user role from Firestore
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userCredential.user!.uid)
+        .get();
+
+    if (userDoc.exists) {
+      String role = userDoc.get('role');
+
+      if (role == 'admin') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const AdminDash()),
+        );
+      } else if (role == 'guide') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const GuidesPage()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Home()),
+        );
+      }
     } else {
-      // Redirect to normal user homepage
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const Home()),
-      );
+      throw Exception("User role not found in Firestore.");
     }
   } catch (e) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -54,6 +71,7 @@ class _LoginState extends State<Login> {
     });
   }
 }
+
 
   @override
   Widget build(BuildContext context) {

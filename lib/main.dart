@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:tourism_app/Screens/home.dart';
 import 'package:tourism_app/Screens/login.dart';
+import 'package:tourism_app/Screens/welcome.dart';
 import 'package:tourism_app/config/router.dart';
 
 void main() async{
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/':(context)=>Login(),
+        '/':(context)=>Welcome(),
       },
  );
   }

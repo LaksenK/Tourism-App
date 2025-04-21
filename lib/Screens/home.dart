@@ -1,82 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:tourism_app/Screens/guides.dart';
+import 'package:tourism_app/Screens/sosPage.dart';
 import 'package:tourism_app/components/navbar.dart';
-import 'package:google_fonts/google_fonts.dart';
+
+// import other pages as needed
 
 class Home extends StatelessWidget {
-  const Home({super.key});
+  Home({super.key});
+
+  final List<Map<String, dynamic>> services = [
+    {
+      'title': 'Find a Guide',
+      'icon': Icons.search,
+      'color': Colors.pinkAccent.shade100,
+      'page': const GuidesPage(),
+    },
+    {
+      'title': 'Register as Guide',
+      'icon': Icons.app_registration,
+      'color': Colors.greenAccent.shade100,
+      'page': null, // Replace with actual page later
+    },
+    {
+      'title': 'Cultural Events',
+      'icon': Icons.event,
+      'color': Colors.orange.shade200,
+      'page': const GuidesPage(), // Replace with real page if different
+    },
+    {
+      'title': 'Blogs',
+      'icon': Icons.article_outlined,
+      'color': Colors.purple.shade200,
+      'page': null, // Replace with blog page
+    },
+    {
+      'title': 'Emergency Contact',
+      'icon': Icons.local_phone_outlined,
+      'color': Colors.blue.shade100,
+      'page': const SosPage(), // This opens the SOS logic directly
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const PreferredSize(
+       appBar: const PreferredSize(
         preferredSize: Size.fromHeight(70),
         child: NavBar(),
       ),
-      body: Stack(
-        children: [
-          // Full-width background image
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(
-                  'https://media.istockphoto.com/id/2147497907/photo/young-woman-traveler-relaxing-and-enjoying-the-tropical-sea-while-traveling-for-summer.jpg?s=612x612&w=0&k=20&c=iY2aqFsXX9Hzq_KwAZhy3ug74z0y7KHxUc_msPHyKzU=', // Replace with your own image if needed
+      body: ListView.builder(
+        itemCount: services.length,
+        padding: const EdgeInsets.all(16),
+        itemBuilder: (context, index) {
+          final service = services[index];
+          return GestureDetector(
+            onTap: () {
+              if (service['page'] != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => service['page']),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Coming soon!")),
+                );
+              }
+            },
+            child: Card(
+              color: service['color'],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              child: ListTile(
+                leading: Icon(service['icon'], color: Colors.black),
+                title: Text(
+                  service['title'],
+                  style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
-                fit: BoxFit.cover,
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               ),
             ),
-          ),
-
-          // Dark overlay (optional for contrast)
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: Colors.black.withOpacity(0.5),
-          ),
-
-          // Centered content
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "YOUR JOURNEY STARTS\n WITH THE RIGHT GUIDE",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.lora(
-                      fontSize: MediaQuery.of(context).size.width < 600 ? 28 : 42,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const GuidesPage()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                      backgroundColor: const Color.fromARGB(182, 174, 210, 200),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      "FIND A GUIDE",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.black),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

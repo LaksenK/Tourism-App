@@ -4,6 +4,6 @@ import 'package:tourism_app/Screens/home.dart';
 
 final GoRouter router = GoRouter(
   routes: [
-    GoRoute(path: '/', builder: (context, state) => const Home()),
+    GoRoute(path: '/', builder: (context, state) => Home()),
      ],
 );

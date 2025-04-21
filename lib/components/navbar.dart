@@ -60,55 +60,54 @@ class _NavBarState extends State<NavBar> {
         ],
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Nav links with icons
-          Row(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.home, color: Colors.black87),
-                tooltip: 'Home',
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const Home()));
-                },
+          // 🍔 Left-side Hamburger Menu
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.menu, color: Colors.black87),
+            onSelected: (value) {
+              if (value == 'home') {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => Home()));
+              } else if (value == 'guides') {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const GuidesPage()));
+              } else if (value == 'profile') {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfilePage()));
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'home',
+                child: ListTile(leading: Icon(Icons.home), title: Text('Home')),
               ),
-              IconButton(
-                icon: const Icon(Icons.map, color: Colors.black87),
-                tooltip: 'Guides',
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const GuidesPage()));
-                },
+              const PopupMenuItem<String>(
+                value: 'guides',
+                child: ListTile(leading: Icon(Icons.map), title: Text('Guides')),
               ),
-              IconButton(
-                icon: const Icon(Icons.person_outline, color: Colors.black87),
-                tooltip: 'Profile',
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfilePage()));
-                },
+              const PopupMenuItem<String>(
+                value: 'profile',
+                child: ListTile(leading: Icon(Icons.person_outline), title: Text('Profile')),
               ),
             ],
           ),
 
-          Expanded(
-            child: Center(
-              child: Text(
-                'WonDora',
-                style: GoogleFonts.lora(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                  shadows: [
-                    Shadow(
-                      blurRadius: 2.0,
-                      color: Colors.black.withOpacity(0.4),
-                      offset: const Offset(1, 1),
-                    ),
-                  ],
+          // 🧭 Centered Wandora Title
+          Text(
+            'Wondora',
+            style: GoogleFonts.lora(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+              shadows: [
+                Shadow(
+                  blurRadius: 2.0,
+                  color: Colors.black.withOpacity(0.4),
+                  offset: const Offset(1, 1),
                 ),
-              ),
+              ],
             ),
           ),
 
-          // User name and actions
+          // 👤 Username + Logout
           Row(
             children: [
               Text(
