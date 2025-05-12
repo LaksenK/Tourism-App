@@ -39,7 +39,7 @@ class Welcome extends StatelessWidget {
                     children: const [
                       // 🏷️ Title
                       Text(
-                        'Wandora',
+                        'Wondora',
                         style: TextStyle(
                           fontSize: 42,
                           fontWeight: FontWeight.bold,

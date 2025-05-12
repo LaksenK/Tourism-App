@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:tourism_app/Screens/eventsSelection.dart';
 import 'package:tourism_app/Screens/guides.dart';
+import 'package:tourism_app/Screens/itenary.dart';
+import 'package:tourism_app/Screens/registerGuide.dart';
 import 'package:tourism_app/Screens/sosPage.dart';
 import 'package:tourism_app/components/navbar.dart';
 
@@ -10,7 +13,7 @@ class Home extends StatelessWidget {
 
   final List<Map<String, dynamic>> services = [
     {
-      'title': 'Find a Guide',
+      'title': 'Find a Exicting Tour',
       'icon': Icons.search,
       'color': Colors.pinkAccent.shade100,
       'page': const GuidesPage(),
@@ -19,13 +22,13 @@ class Home extends StatelessWidget {
       'title': 'Register as Guide',
       'icon': Icons.app_registration,
       'color': Colors.greenAccent.shade100,
-      'page': null, // Replace with actual page later
+      'page': RegisterGuidePage(), // Replace with actual page later
     },
     {
-      'title': 'Cultural Events',
+      'title': 'Make your Trip',
       'icon': Icons.event,
       'color': Colors.orange.shade200,
-      'page': const GuidesPage(), // Replace with real page if different
+      'page': const Itenary(), // Replace with real page if different
     },
     {
       'title': 'Blogs',

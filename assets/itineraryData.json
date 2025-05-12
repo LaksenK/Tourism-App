@@ -1,0 +1,64 @@
+{
+  "Kandy": {
+    "Cultural": {
+      "Day1": {
+        "imgUrl": "https://hblimg.mmtcdn.com/content/hubble/img/kandy/mmt/activities/t_ufs/m_activities_kandy_temple_of_the_sacred_tooth_relic_l_400_640.jpg",
+        "mainAttraction": "Sri Dalada Maligawa",
+        "description": "Sri Dalada Maligawa, commonly known in English as the Temple of the Sacred Tooth Relic, is a Buddhist temple in Kandy, Sri Lanka.",
+        "activities": [
+          "Visit Dalada Maligawa",
+          "Visit Kandy Lake",
+          "Royal Botanical Gardens (Peradeniya)",
+          "Udawattekele Sanctuary"
+        ]
+      },
+      "Day2": {
+        "imgUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Sigiriya_Lion_Rock.jpg",
+        "mainAttraction": "Sigiriya Rock Fortress",
+        "description": "Sigiriya is an ancient rock fortress located in the northern Matale District near the town of Dambulla in Sri Lanka.",
+        "activities": [
+          "Climb Sigiriya Rock",
+          "Explore Sigiriya Museum",
+          "Visit Pidurangala Rock",
+          "Local village tour"
+        ]
+      },
+      "Day3": {
+        "imgUrl": "https://www.travellankaconnection.com/wp-content/uploads/2018/10/Anuradhapura.jpg",
+        "mainAttraction": "Anuradhapura Sacred City",
+        "description": "Anuradhapura is one of the ancient capitals of Sri Lanka, famous for its well-preserved ruins of an ancient Sinhala civilization.",
+        "activities": [
+          "Visit Ruwanwelisaya Stupa",
+          "Explore Jetavanaramaya",
+          "Visit Thuparamaya",
+          "See the ancient Bo Tree (Sri Maha Bodhi)"
+        ]
+      },
+      "Day4": {
+        "imgUrl": "https://www.lovesrilanka.org/wp-content/uploads/2020/05/Polonnaruwa.jpg",
+        "mainAttraction": "Polonnaruwa Ancient City",
+        "description": "Polonnaruwa is the second most ancient of Sri Lanka’s kingdoms, featuring impressive ruins and archaeological treasures.",
+        "activities": [
+          "Explore Gal Vihara",
+          "Visit Polonnaruwa Vatadage",
+          "See the Royal Palace ruins",
+          "Cycle tour through the ruins"
+        ]
+      }
+    }
+  },
+  "Galle": {
+    "Cultural": {
+      "Day1": {
+        "imgUrl": "https://example.com/galle_day1.jpg",
+        "mainAttraction": "Galle Fort",
+        "description": "Galle Fort is a historical, colonial-era fort located in the city of Galle.",
+        "activities": [
+          "Visit Galle Fort",
+          "Explore Galle National Museum",
+          "Walk along the Galle Fort walls"
+        ]
+      }
+    }
+  }
+}

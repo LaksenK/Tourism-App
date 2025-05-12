@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tourism_app/Screens/admindash.dart';
 import 'package:tourism_app/Screens/login.dart';
 import 'package:tourism_app/components/navbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,6 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController newPasswordController = TextEditingController();
 
   bool isLoading = true;
+  bool isAdmin = false;  // To track if the user is an admin
 
   @override
   void initState() {
@@ -33,10 +35,12 @@ class _ProfilePageState extends State<ProfilePage> {
     if (user != null) {
       DocumentSnapshot snapshot = await _firestore.collection('users').doc(user.uid).get();
       final data = snapshot.data() as Map<String, dynamic>;
+
       setState(() {
         firstNameController.text = data['firstName'] ?? '';
         lastNameController.text = data['lastName'] ?? '';
         emailController.text = data['email'] ?? '';
+        isAdmin = data['role'] == 'admin';  // Check if the role is admin
         isLoading = false;
       });
     }
@@ -57,17 +61,17 @@ class _ProfilePageState extends State<ProfilePage> {
         }
 
         ScaffoldMessenger.of(context).showSnackBar(
-  const SnackBar(content: Text("Profile updated successfully! Please login again.")),
-);
+          const SnackBar(content: Text("Profile updated successfully! Please login again.")),
+        );
 
-// Sign out and navigate to login
-await _auth.signOut();
-if (mounted) {
-  Navigator.pushReplacement(
-  context,
-  MaterialPageRoute(builder: (context) => const Login()),
-); // Make sure you’ve set this route
-}
+        // Sign out and navigate to login
+        await _auth.signOut();
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const Login()),
+          ); // Make sure you’ve set this route
+        }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error: ${e.toString()}")),
@@ -114,7 +118,28 @@ if (mounted) {
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
                       ),
-                    )
+                    ),
+                    const SizedBox(height: 10),
+                    // Show this button only if the user is an admin
+                    if (isAdmin)
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const AdminDash()),
+                            );
+                          },
+                          icon: const Icon(Icons.admin_panel_settings),
+                          label: const Text("Go to Admin Dashboard"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black87,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),

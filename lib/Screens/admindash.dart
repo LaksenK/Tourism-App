@@ -1,6 +1,7 @@
 // Admin Dashboard with guide request approval functionality
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tourism_app/Screens/events.dart';
 import 'package:tourism_app/components/navbar.dart';
 
 class AdminDash extends StatefulWidget {
@@ -27,6 +28,32 @@ class AdminDashState extends State<AdminDash> {
               child: Text(
                 "Pending Guide Requests",
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Center(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AddEventPage()),
+                  );
+                },
+                icon: const Icon(Icons.add, size: 24),
+                label:
+                    const Text("Add an Event", style: TextStyle(fontSize: 16)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple,
+                  foregroundColor: Colors.white,
+                  elevation: 6,
+                  shadowColor: Colors.deepPurpleAccent,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 20),
