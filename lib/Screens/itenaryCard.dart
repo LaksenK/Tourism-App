@@ -41,7 +41,7 @@ class _ItenaryCardState extends State<ItenaryCard> {
           print("Day $i data found: ${doc.data()}");
           Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           String imgUrl = data['ImgUrl'] ?? "https://via.placeholder.com/200";
-          print("Image URL for Day $i: $imgUrl"); // Log the URL to debug
+          print("Image URL for Day $i: $imgUrl");
           itineraryData.add({
             "day": 'Day $i',
             "imgUrl": imgUrl,
@@ -127,102 +127,105 @@ class _ItenaryCardState extends State<ItenaryCard> {
                 : Column(
                     children: [
                       Expanded(
+                        child: PageView.builder(
+                          controller: _pageController,
+                          onPageChanged: (index) {
+                            setState(() {
+                              _currentPage = index;
+                            });
+                          },
+                          itemCount: itineraryData.length,
+                          itemBuilder: (context, index) {
+                            final data = itineraryData[index];
+                            print("Rendering day: ${data['day']}");
+                            return Card(
+                              margin: const EdgeInsets.symmetric(horizontal: 10),
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      data['day'].toUpperCase(),
+                                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      data['mainAttraction'].toUpperCase(),
+                                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image.network(
+                                        data['imgUrl'] ?? "https://via.placeholder.com/200",
+                                        height: 200,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                        loadingBuilder: (context, child, loadingProgress) {
+                                          if (loadingProgress == null) return child;
+                                          return const Center(child: CircularProgressIndicator());
+                                        },
+                                        errorBuilder: (context, error, stackTrace) {
+                                          print("Error loading image for ${data['day']}: $error (Stack: $stackTrace)");
+                                          return Image.network(
+                                            "https://via.placeholder.com/200",
+                                            height: 200,
+                                            width: double.infinity,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              return const Icon(Icons.broken_image, size: 50);
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      data['description'],
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      children: [
+                                        const Text(
+                                          "🚶 ",
+                                          style: TextStyle(fontSize: 16),
+                                        ),
+                                        const Text(
+                                          'Activities:',
+                                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 5),
+                                    for (var activity in (data['activities'] as List<dynamic>))
+                                      Text(
+                                        '- $activity',
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      // Navigation arrows below the card
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             IconButton(
                               icon: Icon(Icons.arrow_back_ios),
                               onPressed: _previousPage,
                             ),
-                            Expanded(
-                              child: PageView.builder(
-                                controller: _pageController,
-                                onPageChanged: (index) {
-                                  setState(() {
-                                    _currentPage = index;
-                                  });
-                                },
-                                itemCount: itineraryData.length,
-                                itemBuilder: (context, index) {
-                                  final data = itineraryData[index];
-                                  print("Rendering day: ${data['day']}");
-                                  return Card(
-                                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                                    elevation: 5,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            data['day'].toUpperCase(),
-                                            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                                          ),
-                                          const SizedBox(height: 10),
-                                          Text(
-                                            data['mainAttraction'].toUpperCase(),
-                                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                          ),
-                                          const SizedBox(height: 10),
-                                          // Display the real image here (not text or URL)
-                                          ClipRRect(
-                                            borderRadius: BorderRadius.circular(10),
-                                            child: Image.network(
-                                              data['imgUrl'] ?? "https://via.placeholder.com/200",
-                                              height: 200,
-                                              width: double.infinity,
-                                              fit: BoxFit.cover,
-                                              loadingBuilder: (context, child, loadingProgress) {
-                                                if (loadingProgress == null) return child;
-                                                return const Center(child: CircularProgressIndicator());
-                                              },
-                                              errorBuilder: (context, error, stackTrace) {
-                                                print("Error loading image for ${data['day']}: $error (Stack: $stackTrace)");
-                                                return Image.network(
-                                                  "https://via.placeholder.com/200",
-                                                  height: 200,
-                                                  width: double.infinity,
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder: (context, error, stackTrace) {
-                                                    return const Icon(Icons.broken_image, size: 50);
-                                                  },
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                          const SizedBox(height: 10),
-                                          Text(
-                                            data['description'],
-                                            style: const TextStyle(fontSize: 16),
-                                          ),
-                                          const SizedBox(height: 10),
-                                          Row(
-                                            children: [
-                                              const Text(
-                                                "🚶 ",
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                              const Text(
-                                                'Activities:',
-                                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 5),
-                                          for (var activity in (data['activities'] as List<dynamic>))
-                                            Text(
-                                              '- $activity',
-                                              style: const TextStyle(fontSize: 14),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
+                            const SizedBox(width: 20), // Space between arrows
                             IconButton(
                               icon: Icon(Icons.arrow_forward_ios),
                               onPressed: _nextPage,

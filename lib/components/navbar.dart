@@ -74,7 +74,7 @@ class _NavBarState extends State<NavBar> {
               } else if (value == 'guides') {
                 Navigator.push(context, MaterialPageRoute(builder: (_) => const GuidesPage()));
               }  else if (value == 'itenary_genarator') {
-                Navigator.push(context, MaterialPageRoute(builder: (_) =>  const Itenary())); // Navigate to Cultural Events
+                Navigator.push(context, MaterialPageRoute(builder: (_) =>   ItineraryGenerator())); // Navigate to Cultural Events
               } else if (value == 'emergency_contacts') {
                 Navigator.push(context, MaterialPageRoute(builder: (_) => const SosPage())); // Navigate to Emergency Contacts
               }else if (value == 'profile') {

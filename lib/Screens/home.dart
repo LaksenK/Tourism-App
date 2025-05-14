@@ -28,7 +28,7 @@ class Home extends StatelessWidget {
       'title': 'Make your Trip',
       'icon': Icons.event,
       'color': Colors.orange.shade200,
-      'page': const Itenary(), // Replace with real page if different
+      'page':  ItineraryGenerator(), // Replace with real page if different
     },
     {
       'title': 'Blogs',
